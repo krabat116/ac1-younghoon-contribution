@@ -1,0 +1,16 @@
+# Use the same base image as your FastAPI application
+FROM python:3.9
+
+# Set the working directory
+WORKDIR /app
+
+# Copy your requirements file and install dependencies
+COPY ./persistence/ /app/
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+
+# Copy your seeding script
+#COPY ./persistence/seed_data.py /app/seed_data.py
+
+# Run the seeding script
+CMD ["python", "seed_data.py"]
+
