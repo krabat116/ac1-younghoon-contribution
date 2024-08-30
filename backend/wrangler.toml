@@ -8,9 +8,9 @@ compatibility_date = "2024-08-09"
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+[[r2_buckets]]
+binding = "OBJECT_STORAGE"
+bucket_name = "photo-sharing"
 
 [[d1_databases]]
 binding = "DB"

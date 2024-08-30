@@ -1,16 +1,27 @@
-import { Hono } from 'hono'
-import { ENVS } from './environment'
-import { getDB } from './external/database/db'
+import { type ENVS } from './environment'
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { swaggerUI } from '@hono/swagger-ui'
 
-const app = new Hono<{ Bindings: ENVS }>()
+import { uploadImage } from './features/uploadImage'
+import { getImage } from './features/getImage'
 
+// Root Application
+const app = new OpenAPIHono<{ Bindings: ENVS }>();
 
-app.get('/', async (c) => {
-  const db = getDB(c.env.DB);
+// Application Feature Routes
+app.route('/',uploadImage);
+app.route('/',getImage);
 
-  const result = await db.selectFrom('Users').selectAll().execute()
+// SwaggerUI component
+app.get('/ui', swaggerUI({ url: '/doc' }));
 
-  return c.text(`Hello Hono!, ${JSON.stringify(result)}`)
-})
+// Used to access the OpenAPI JSON Document
+app.doc("/doc", {
+  openapi: "3.0.0",
+  info: {
+      version: "1.0.0",
+      title: "Photo Sharing App",
+  },
+});
 
-export default app
+export default app;

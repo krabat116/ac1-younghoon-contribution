@@ -19,10 +19,23 @@ The repository is a mono-repository style, with both frontend & backend codebase
 
 This structure also simplifies CI/CD implementations.
 
+### API Route development & structuring
+
+This repository uses an approach to software design & organisation known as `Vertical Slice Architecture`, the primary result of which is to prefer to co-locate relevant business logic assoicated with a given feature. 
+
+
+## API Documentation
+
+All API routes are automatically documented with openAPI compliant specifications generated thanks to an integration with `@hono/zod-openapi`, which both creates the documentation automatically, while also allowing strong typing & autocomletions.
+
+To access the raw JSON of the openAPI definition, first [start the development server](#start-the-development-server), then nagivate to `localhost:8787/doc`.
+
+To access a prettier GUI version of the openAPI definition using the SwaggerUI, first [start the development server](#start-the-development-server), then nagivate to `localhost:8787/ui`.
+
 
 ## Backend
 
-**Start the development server**
+### **Start the development server**
 
 Since this project uses cloudflare workers, D1 & Wrangler, the development environment is very simple to setup, and a local database is automatically created. To start the development environent, run:
 
@@ -54,7 +67,7 @@ A given migration file is only every executed once against a database, which is 
 
 
 ---
-**Create a migration**
+### **Create a migration**
 
 If a change is required to be made to the database schema, like updating a table, adding a new table, or dropping some columns, then a new migration should be created. Typically, avoid editing existing migrations, if a change way made to a table in a previous migration that now needs to be undone, simply drop the column in a new migration instead of removing it from the existing migration.
 
@@ -66,7 +79,7 @@ npm run migration:create <migration-name>
 This will create a new migration `.sql` file under the `/backend/migrations/` directory. There you may define your changes.
 
 ---
-**Run a migration locally**
+### **Run a migration locally**
 
 Once a migration has been created, you will need to apply it to your local environment for testing. To do so, run the following:
 ```bash
@@ -76,7 +89,7 @@ npm run migration:apply
 
 
 ---
-**Deploy a migration to production**
+### **Deploy a migration to production**
 
 Once you have verified your migration locally, you can propogate it to the production database, using:
 
