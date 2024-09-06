@@ -12,14 +12,38 @@ import { useState } from 'react'
 import { useFonts, Raleway_700Bold } from '@expo-google-fonts/raleway'
 import { Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito'
 import { router } from 'expo-router'
+import Constants from 'expo-constants';
+import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x';
+
+
+// Access environment variables with optional chaining and default values
+const KINDE_ISSUER_URL = Constants.expoConfig?.extra?.KINDE_ISSUER_URL ?? '';
+const KINDE_POST_CALLBACK_URL = Constants.expoConfig?.extra?.KINDE_POST_CALLBACK_URL ?? '';
+const KINDE_CLIENT_ID = Constants.expoConfig?.extra?.KINDE_CLIENT_ID ?? '';
+const KINDE_POST_LOGOUT_REDIRECT_URL = Constants.expoConfig?.extra?.KINDE_POST_LOGOUT_REDIRECT_URL ?? '';
+
+// Initialize KindeSDK
+const client = new KindeSDK(
+  KINDE_ISSUER_URL,
+  KINDE_POST_CALLBACK_URL,
+  KINDE_CLIENT_ID,
+  KINDE_POST_LOGOUT_REDIRECT_URL
+);
+
 
 export default function LogIn() {
   const [userInfo, setUserInfo] = useState({
     id: '',
     password: '',
   })
-  const handleLogin = () => {
+  const handleLogin = async() => {
     console.log("You've tried to log in", userInfo.id, userInfo.password)
+      // Example: client.login({ id, password });
+      const token = await client.login();
+      if (token) {
+        console.log('Login authenticated');
+        // User was authenticated
+      }
   }
 
   return (
