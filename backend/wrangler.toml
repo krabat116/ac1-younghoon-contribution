@@ -1,8 +1,12 @@
 name = "backend"
 compatibility_date = "2024-08-09"
 
-# [vars]
-# DB_NAME = "seen-culture-app"
+[vars]
+R2_ACCESS_KEY_ID = "<get from dashboard>"
+R2_SECRET_ACCESS_KEY = "<get from dashboard>"
+BUCKET_NAME = "dev-photo-sharing"
+ACCOUNT_ID = "56315bca94c9b2bf7144927de2630892"
+
 
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
@@ -11,6 +15,7 @@ compatibility_date = "2024-08-09"
 [[r2_buckets]]
 binding = "OBJECT_STORAGE"
 bucket_name = "photo-sharing"
+preview_bucket_name = "dev-photo-sharing"
 
 [[d1_databases]]
 binding = "DB"

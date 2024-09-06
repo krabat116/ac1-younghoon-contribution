@@ -4,33 +4,33 @@ PRAGMA foreign_keys = ON;
 DROP TABLE Users;
 
 CREATE TABLE Users (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY NOT NULL,
     email TEXT NOT NULL UNIQUE,
     phone TEXT,
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
     dateOfBirth TEXT NOT NULL,
     subscription TEXT NOT NULL,
-    profileImage TEXT NOT NULL,
-    country TEXT,
-    state TEXT
+    profileImage TEXT,
+    country TEXT NOT NULL,
+    state TEXT NOT NULL,
     createdAt TEXT DEFAULT (datetime('now'))
 );
 
 CREATE TABLE Albums (
-    id INTEGER PRIMARY KEY,
-    owner INTEGER NOT NULL,
+    id TEXT PRIMARY KEY NOT NULL,
+    owner TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     dateCreated TEXT NOT NULL DEFAULT (date('now')),
     lastUpdated TEXT NOT NULL DEFAULT (datetime('now')),
-    numImages INTEGER NOT NULL,
+    numImages INTEGER DEFAULT (0),
     thumbnailUrl TEXT NOT NULL,
     FOREIGN KEY (owner) REFERENCES Users(id)
 );
 
 CREATE TABLE AlbumPublicLinks (
-    AlbumId INTEGER PRIMARY KEY,
+    Albumid TEXT PRIMARY KEY NOT NULL,
     publicLink TEXT NOT NULL,
     enabled INTEGER CHECK (enabled IN (0, 1)),
     createdAt TEXT DEFAULT (datetime('now')),
@@ -38,21 +38,20 @@ CREATE TABLE AlbumPublicLinks (
 );
 
 CREATE TABLE AlbumComments (
-    id INTEGER PRIMARY KEY,
-    owner INTEGER NOT NULL,
-    albumid INTEGER NOT NULL,
+    id TEXT PRIMARY KEY NOT NULL,
+    owner TEXT NOT NULL,
+    albumid TEXT NOT NULL,
     content TEXT NOT NULL,
-    dateAdded TEXT NOT NULL DEFAULT (datetime('now')),
     dateCreated TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (owner) REFERENCES Users(id),
     FOREIGN KEY (albumid) REFERENCES Albums(id)
 );
 
 CREATE TABLE Images (
-    id INTEGER PRIMARY KEY,
-    owner INTEGER NOT NULL,
-    albumid INTEGER NOT NULL,
-    description TEXT NOT NULL,
+    id TEXT PRIMARY KEY NOT NULL,
+    owner TEXT NOT NULL,
+    albumid TEXT NOT NULL,
+    description TEXT DEFAULT NULL,
     "order" INTEGER NOT NULL,
     thumbnailUrl TEXT NOT NULL,
     imageUrl TEXT NOT NULL,
@@ -64,8 +63,8 @@ CREATE TABLE Images (
 );
 
 CREATE TABLE Groups (
-    id INTEGER PRIMARY KEY,
-    owner INTEGER NOT NULL,
+    id TEXT PRIMARY KEY NOT NULL,
+    owner TEXT NOT NULL,
     emojiThumbnail TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -75,8 +74,8 @@ CREATE TABLE Groups (
 );
 
 CREATE TABLE AlbumMembers (
-    AlbumId INTEGER NOT NULL,
-    userId INTEGER NOT NULL,
+    AlbumId TEXT NOT NULL,
+    userId TEXT NOT NULL,
     Role TEXT NOT NULL,
     dateAdded TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (AlbumId, userId),
@@ -85,8 +84,8 @@ CREATE TABLE AlbumMembers (
 );
 
 CREATE TABLE GroupMembers (
-    GroupId INTEGER NOT NULL,
-    userId INTEGER NOT NULL,
+    GroupId TEXT NOT NULL,
+    userId TEXT NOT NULL,
     Role TEXT NOT NULL,
     dateAdded TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (GroupId, userId),
@@ -95,7 +94,7 @@ CREATE TABLE GroupMembers (
 );
 
 CREATE TABLE GroupInvite (
-    GroupId INTEGER NOT NULL,
+    GroupId TEXT NOT NULL,
     invitedPhoneNum TEXT NOT NULL,
     Role TEXT NOT NULL,
     dateInvited TEXT NOT NULL DEFAULT (datetime('now')),
@@ -104,8 +103,8 @@ CREATE TABLE GroupInvite (
 );
 
 CREATE TABLE AlbumSharedGroups (
-    AlbumId INTEGER NOT NULL,
-    GroupId INTEGER NOT NULL,
+    AlbumId TEXT NOT NULL,
+    GroupId TEXT NOT NULL,
     createdAt TEXT DEFAULT (datetime('now')),
     PRIMARY KEY (AlbumId),
     FOREIGN KEY (AlbumId) REFERENCES Albums(id),
