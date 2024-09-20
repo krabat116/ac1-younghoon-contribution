@@ -12,3 +12,15 @@ export type ENVS = {
   BUCKET_NAME:string;
   ACCOUNT_ID:string;
 }
+
+// export const ROLES = [
+//   "OWNER",
+//   "CONTRIBUTOR",
+//   "VIEWER"
+// ];
+
+export enum ROLES {
+  OWNER = "OWNER",
+  CONTRIBUTOR = "CONTRIBUTOR",
+  VIEWER = "VIEWER"
+}

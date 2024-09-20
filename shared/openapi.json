@@ -105,6 +105,59 @@
         "required": [
           "ownerId"
         ]
+      },
+      "GroupMemberCreate": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "CONTRIBUTOR",
+              "VIEWER"
+            ],
+            "example": "CONTRIBUTOR"
+          }
+        }
+      },
+      "GroupMemberUpdate": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "CONTRIBUTOR",
+              "VIEWER"
+            ],
+            "example": "CONTRIBUTOR"
+          }
+        }
+      },
+      "AlbumMemberCreate": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "CONTRIBUTOR",
+              "VIEWER"
+            ],
+            "example": "CONTRIBUTOR"
+          }
+        }
+      },
+      "PublicLinkUpdate": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ]
       }
     },
     "parameters": {}
@@ -356,6 +409,109 @@
         }
       }
     },
+    "/image/all/{albumId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to get the images for."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch all image objects for an album.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "albumid": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "heightpx": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "imageUrl": {
+                        "type": "string"
+                      },
+                      "order": {
+                        "type": "integer"
+                      },
+                      "owner": {
+                        "type": "string"
+                      },
+                      "thumbnailUrl": {
+                        "type": "string"
+                      },
+                      "widthpx": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      }
+                    },
+                    "required": [
+                      "description",
+                      "id",
+                      "albumid",
+                      "createdAt",
+                      "heightpx",
+                      "imageUrl",
+                      "order",
+                      "owner",
+                      "thumbnailUrl",
+                      "widthpx"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Image could not be found in bucket.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/comment": {
       "post": {
         "requestBody": {
@@ -534,6 +690,687 @@
           },
           "500": {
             "description": "Failed to delete a comment from a post.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groupmember/{groupId}/{userId}": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the group you wish to add a member to."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the user you wish to add as member of the group."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupMemberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "add new group member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "failed to add new group member. May already exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the group you wish to get members of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the user you wish to remove from the group."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete group members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the group you wish to update a member of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the user you wish to update."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupMemberUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update a group member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/groupmember/{groupId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the group you wish to get members of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get group members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dateAdded": {
+                        "type": "string"
+                      },
+                      "GroupId": {
+                        "type": "string"
+                      },
+                      "Role": {
+                        "type": "string"
+                      },
+                      "userId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "dateAdded",
+                      "GroupId",
+                      "Role",
+                      "userId"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/albummember/{albumId}/{userId}": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to add a member to."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the user you wish to add as member of the album."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AlbumMemberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "add new album member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "failed to add new album member. May already exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to delete members from."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the user you wish to remove from the album."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete group members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to update a member of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the user you wish to update."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupMemberUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update a group member.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/albummember/{albumId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to get members of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get group members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dateAdded": {
+                        "type": "string"
+                      },
+                      "AlbumId": {
+                        "type": "string"
+                      },
+                      "Role": {
+                        "type": "string"
+                      },
+                      "userId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "dateAdded",
+                      "AlbumId",
+                      "Role",
+                      "userId"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publiclink/{albumId}": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to make public."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "add new public link.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "publicLink": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "publicLink"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "failed to create public link. May already exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to delete the public link from."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete public link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to get PublicLink of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get group members.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "publicLink": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "publicLink"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "could not find group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of the album you wish to update a member of."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicLinkUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update a public links status.",
             "content": {
               "application/json": {
                 "schema": {
