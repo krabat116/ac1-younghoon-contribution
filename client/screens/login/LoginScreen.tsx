@@ -36,15 +36,23 @@ export default function LogIn() {
     id: '',
     password: '',
   })
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     console.log("You've tried to log in", userInfo.id, userInfo.password)
-      // Example: client.login({ id, password });
-      const token = await client.login();
-      if (token) {
-        console.log('Login authenticated');
-        // User was authenticated
-      }
-  }
+  
+    const token = await client.login();
+    if (token) {
+      // User was authenticated
+      console.log("Authentication Successful")
+      //add redirection here once homepage is setup
+    }
+    else{
+      router.push('/(routes)/login')
+    }  
+  };
+  
+  
+  
+  
 
   return (
     <ScrollView>
