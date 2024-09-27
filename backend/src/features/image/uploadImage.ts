@@ -107,6 +107,16 @@ uploadImage.openapi(createImageRoute,async (c) => {
 
         await objectStorage.put(newImageId,body.image);
 
+        // Update album image count.
+        const albumImageCount = await db.selectFrom('Images')
+                                        .where('albumid','=',body.albumId)
+                                        .select((eb) => eb.fn.count<number>('id').as('imageCount') )
+                                        .executeTakeFirst();
+
+        await db.updateTable('Albums').where('id','=',body.albumId).set({
+          numImages : albumImageCount?.imageCount ?? 0
+        }).execute();
+                                      
 
       } catch (e) {
         console.error(e)

@@ -97,12 +97,12 @@ updateImage.openapi(updateImageRoute,async (c) => {
       }
 
       // Configure the update query
-      const query = db.updateTable('Images')
+      var query = db.updateTable('Images')
                       // a description can be removed, so we need to allow nulls.
                       .set({description:body.description});
 
       // We only update the order value if it's provided.
-      if(body.order != undefined) query.set({order:body.order})
+      if(body.order != undefined) query = query.set({order:body.order})
 
       // Execute the query
       await query.execute()

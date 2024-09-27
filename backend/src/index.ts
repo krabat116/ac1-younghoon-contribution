@@ -26,6 +26,10 @@ import { createUser } from './features/user/createUser'
 import { deleteUser } from './features/user/deleteUser'
 import { getUser } from './features/user/getUser'
 import { updateUser } from './features/user/updateUser'
+import { createAlbum } from './features/album/createAlbum'
+import { getAlbum } from './features/album/getAlbum'
+import { deleteAlbum } from './features/album/deleteAlbum'
+import { updateAlbum } from './features/album/updateAlbum'
 
 // Root Application
 const app = new OpenAPIHono<{ Bindings: ENVS }>();
@@ -60,6 +64,12 @@ app.route('/',createUser);
 app.route('/',deleteUser);
 app.route('/',getUser);
 app.route('/',updateUser);
+
+app.route('/',createAlbum);
+app.route('/',getAlbum);
+app.route('/',deleteAlbum);
+app.route('/',updateAlbum);
+
 
 // SwaggerUI component
 app.get('/ui', swaggerUI({ url: '/doc' }));

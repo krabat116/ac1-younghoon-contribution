@@ -6,16 +6,17 @@ import { type ENVS } from '../../environment';
  * This defines the structure of our routes input or body of the request
  */
 const updateUserSchema = z.object({
-    profileImage: z.string().optional().openapi({example:"https://someimage.com"}),
-  }).openapi('UserUpdate')
+    name: z.string().optional().openapi({example:'Babys first moments!'}),
+    description: z.string().optional().openapi({example:'A collection of beautiful baby Andreas first experiences!'}),
+  }).openapi('AlbumUpdate')
 
 const updateUserParams = z.object({
-  userId:z.string().min(1).openapi({
+  albumId:z.string().min(1).openapi({
     param:{
         in:'path',
-        name:'userId'
+        name:'albumId'
     },
-    description:'Id of user you wish to update.'
+    description:'Id of album you wish to update.'
 })
 })
 
@@ -31,9 +32,9 @@ const Response = z.object({
 /**
  * This both defines our routes setup, but also generates the openAPI documentation.
  */
-const updateUserRoute = createRoute({
+const updateAlbumRoute = createRoute({
     method:'patch',
-    path:'/user/{userId}',
+    path:'/album/{albumId}',
     request: {
       params:updateUserParams,
       body: {
@@ -64,37 +65,44 @@ const updateUserRoute = createRoute({
     }
 })
 
-export const updateUser = new OpenAPIHono<{ Bindings: ENVS }>();
+export const updateAlbum = new OpenAPIHono<{ Bindings: ENVS }>();
 
 /**
  * This is the actual logic part of our route / feature. 
  */
-updateUser.openapi(updateUserRoute,async (c) => {
+updateAlbum.openapi(updateAlbumRoute,async (c) => {
     const db = getDB(c.env.DB);
 
-    const userId = c.req.param('userId');
+    const albumId = c.req.param('albumId');
     const body = c.req.valid("form");
   
     try{
       // Configure the update query
-      var query = db.updateTable('Users').where('id','=',userId)
+      var query = db.updateTable('Albums').where('id','=',albumId)
 
       // We only update the order value if it's provided.
-      if(body.profileImage != undefined) query = query.set({profileImage:body.profileImage})
+      if(body.name != undefined){
+        query = query.set({name:body.name})
+      }
+
+      if(body.description != undefined){
+        query = query.set({description:body.description})
+      }
 
       // Execute the query
+      console.log(query.compile().sql)
       await query.execute()
+
+      return c.json({
+        type:"SUCCESS",
+        message:'successfully updated album.',
+      },201)
 
     } catch (e) {
       console.error(e)
       return c.json({
         type:"ERROR",
-        message:"Failed to update user."
+        message:"Failed to update album."
       },500)
     }
-  
-    return c.json({
-      type:"SUCCESS",
-      message:`successfully updated user with id:${userId}`,
-    },201)
   })
