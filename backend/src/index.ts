@@ -22,6 +22,10 @@ import { createPublicLink } from './features/publiclink/createPublicLink'
 import { deletePublicLink } from './features/publiclink/deletePublicLink'
 import { getPublicLink } from './features/publiclink/getPublicLink'
 import { updatePublicLink } from './features/publiclink/updatePublicLink'
+import { createUser } from './features/user/createUser'
+import { deleteUser } from './features/user/deleteUser'
+import { getUser } from './features/user/getUser'
+import { updateUser } from './features/user/updateUser'
 
 // Root Application
 const app = new OpenAPIHono<{ Bindings: ENVS }>();
@@ -51,6 +55,11 @@ app.route('/',createPublicLink);
 app.route('/',deletePublicLink);
 app.route('/',getPublicLink);
 app.route('/',updatePublicLink);
+
+app.route('/',createUser);
+app.route('/',deleteUser);
+app.route('/',getUser);
+app.route('/',updateUser);
 
 // SwaggerUI component
 app.get('/ui', swaggerUI({ url: '/doc' }));

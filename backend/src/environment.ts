@@ -24,3 +24,9 @@ export enum ROLES {
   CONTRIBUTOR = "CONTRIBUTOR",
   VIEWER = "VIEWER"
 }
+
+export enum SUBSCRIPTIONS {
+  FREE = "FREE",
+  TIER_1 = "TIER_1",
+  TIER_2 = "TIER_2"
+}
