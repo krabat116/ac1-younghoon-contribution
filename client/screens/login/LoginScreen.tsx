@@ -14,6 +14,11 @@ import { Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito'
 import { router } from 'expo-router'
 import Constants from 'expo-constants';
 import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x';
+import * as SecureStore from 'expo-secure-store';
+
+
+
+
 
 
 // Access environment variables with optional chaining and default values
@@ -36,13 +41,31 @@ export default function LogIn() {
     id: '',
     password: '',
   })
+
+  async function saveToken(token: string) {
+    await SecureStore.setItemAsync('accessToken', token);
+  }  
+  
+  async function getToken() {
+    return await SecureStore.getItemAsync('accessToken');
+  }
+  
+  async function displayToken() {
+    const token = await getToken(); // Wait for the promise to resolve
+    console.log("Token After saving: ", token);
+  }
+  
   const handleLogin = async () => {
     console.log("You've tried to log in", userInfo.id, userInfo.password)
-  
+
     const token = await client.login();
     if (token) {
       // User was authenticated
       console.log("Authentication Successful")
+      console.log("Token Before saving: ", token.access_token)
+      saveToken(token.access_token)
+      displayToken()
+      router.push('/(tabs)/home')
       //add redirection here once homepage is setup
     }
     else{

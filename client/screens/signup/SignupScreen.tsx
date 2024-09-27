@@ -14,6 +14,7 @@ import {
   import { router } from 'expo-router'
   import Constants from 'expo-constants';
   import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x';
+  import * as SecureStore from 'expo-secure-store';
 
 
   // Access environment variables with optional chaining and default values
@@ -38,13 +39,29 @@ import {
       username: '',
       password: '',
     })
+
+    async function saveToken(token: string) {
+      await SecureStore.setItemAsync('accessToken', token);
+    }  
+    
+    async function getToken() {
+      return await SecureStore.getItemAsync('accessToken');
+    }
+    async function displayToken() {
+      const token = await getToken(); // Wait for the promise to resolve
+      console.log("Token After saving: ", token);
+    }
+
     const handleSignup = async () => {
       console.log("You've tried to sign up", userInfo.id, userInfo.password)  
       const token = await client.register();
       if (token) {
         // User was authenticated
-        console.log("Authentication Successful")
-        //add redirection here once homepage is setup
+          console.log("Authentication Successful")
+          console.log("Token Before saving: ", token.access_token)
+          saveToken(token.access_token)
+          displayToken()
+          router.push('/(tabs)/home')
       }
       else{
         router.push('/(routes)/singup')
