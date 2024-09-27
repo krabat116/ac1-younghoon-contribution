@@ -215,6 +215,41 @@
             "example": "https://someimage.com"
           }
         }
+      },
+      "AlbumCreate": {
+        "type": "object",
+        "properties": {
+          "ownerId": {
+            "type": "string",
+            "example": "user1"
+          },
+          "name": {
+            "type": "string",
+            "example": "French Architecture"
+          },
+          "description": {
+            "type": "string",
+            "example": "a collection of the most beautiful examples of historic french architecture taken from our trip around all of france."
+          }
+        },
+        "required": [
+          "ownerId",
+          "name",
+          "description"
+        ]
+      },
+      "AlbumUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Babys first moments!"
+          },
+          "description": {
+            "type": "string",
+            "example": "A collection of beautiful baby Andreas first experiences!"
+          }
+        }
       }
     },
     "parameters": {}
@@ -1705,6 +1740,300 @@
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update a user object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to update user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/album": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AlbumCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "create a new album object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "albumId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "albumId"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to create new album.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/album/{albumId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of album you wish to fetch."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch an album object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "album": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "dateCreated": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "lastUpdated": {
+                          "type": "string"
+                        },
+                        "numImages": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "owner": {
+                          "type": "string"
+                        },
+                        "thumbnailUrl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "description",
+                        "name",
+                        "dateCreated",
+                        "id",
+                        "lastUpdated",
+                        "owner",
+                        "thumbnailUrl"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "album"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "album could not be found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of album you wish to delete."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete an album by id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to delete the album.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of album you wish to update."
+            },
+            "required": true,
+            "in": "path",
+            "name": "albumId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AlbumUpdate"
               }
             }
           }
