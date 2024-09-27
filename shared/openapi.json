@@ -158,6 +158,63 @@
         "required": [
           "enabled"
         ]
+      },
+      "UserCreate": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "example": "2000-01-07"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john.doe@email.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0400500600"
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://media.istockphoto.com/id/1327592506/vector/default-avatar-photo-placeholder-icon-grey-profile-picture-business-man.jpg?s=612x612&w=0&k=20&c=BpR0FVaEa5F24GIw7K8nMWiiGmbb8qmhfkpXcp1dhQg="
+          },
+          "country": {
+            "type": "string",
+            "example": "australia"
+          },
+          "state": {
+            "type": "string",
+            "example": "vic"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "dateOfBirth",
+          "email",
+          "phone",
+          "country",
+          "state"
+        ]
+      },
+      "UserUpdate": {
+        "type": "object",
+        "properties": {
+          "profileImage": {
+            "type": "string",
+            "example": "https://someimage.com"
+          }
+        }
       }
     },
     "parameters": {}
@@ -1371,6 +1428,312 @@
         "responses": {
           "201": {
             "description": "update a public links status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "create a new user object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "userId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "userId"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to create new user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of user you wish to delete."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete a user by id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to delete the image.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of user you wish to fetch."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch an image object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "dateOfBirth": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "lastName": {
+                          "type": "string"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "profileImage": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "state": {
+                          "type": "string"
+                        },
+                        "subscription": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "country",
+                        "dateOfBirth",
+                        "email",
+                        "firstName",
+                        "id",
+                        "lastName",
+                        "state",
+                        "subscription"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "user"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Image could not be found in bucket.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of user you wish to update."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update a user object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to update user.",
             "content": {
               "application/json": {
                 "schema": {
