@@ -250,6 +250,50 @@
             "example": "A collection of beautiful baby Andreas first experiences!"
           }
         }
+      },
+      "GroupCreate": {
+        "type": "object",
+        "properties": {
+          "ownerId": {
+            "type": "string",
+            "example": "user2"
+          },
+          "emojiThumbnail": {
+            "type": "string",
+            "example": "🎃"
+          },
+          "name": {
+            "type": "string",
+            "example": "Halloweenies"
+          },
+          "description": {
+            "type": "string",
+            "example": "The spoopiest group who ever did live."
+          }
+        },
+        "required": [
+          "ownerId",
+          "emojiThumbnail",
+          "name",
+          "description"
+        ]
+      },
+      "GroupUpdate": {
+        "type": "object",
+        "properties": {
+          "emojiThumbnail": {
+            "type": "string",
+            "example": "🎎"
+          },
+          "name": {
+            "type": "string",
+            "example": "The Doll House"
+          },
+          "description": {
+            "type": "string",
+            "example": "Just the groups of girlies."
+          }
+        }
       }
     },
     "parameters": {}
@@ -2063,6 +2107,296 @@
           },
           "500": {
             "description": "failed to update user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "create a new album object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "groupId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "groupId"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to create new album.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/{groupId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of group you wish to fetch."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch an album object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "group": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "dateCreated": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "lastUpdated": {
+                          "type": "string"
+                        },
+                        "owner": {
+                          "type": "string"
+                        },
+                        "emojiThumbnail": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "description",
+                        "name",
+                        "dateCreated",
+                        "id",
+                        "lastUpdated",
+                        "owner",
+                        "emojiThumbnail"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "group"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "album could not be found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of group you wish to update."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "update a group.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to update group.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of group you wish to delete."
+            },
+            "required": true,
+            "in": "path",
+            "name": "groupId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete an group by id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed to delete the group.",
             "content": {
               "application/json": {
                 "schema": {
