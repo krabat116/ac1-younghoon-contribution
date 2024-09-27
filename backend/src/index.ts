@@ -30,6 +30,10 @@ import { createAlbum } from './features/album/createAlbum'
 import { getAlbum } from './features/album/getAlbum'
 import { deleteAlbum } from './features/album/deleteAlbum'
 import { updateAlbum } from './features/album/updateAlbum'
+import { createGroup } from './features/group/createGroup'
+import { getGroup } from './features/group/getGroup'
+import { updateGroup } from './features/group/updateGroup'
+import { deleteGroup } from './features/group/deleteGroup'
 
 // Root Application
 const app = new OpenAPIHono<{ Bindings: ENVS }>();
@@ -70,6 +74,10 @@ app.route('/',getAlbum);
 app.route('/',deleteAlbum);
 app.route('/',updateAlbum);
 
+app.route('/',createGroup);
+app.route('/',getGroup);
+app.route('/',updateGroup);
+app.route('/',deleteGroup);
 
 // SwaggerUI component
 app.get('/ui', swaggerUI({ url: '/doc' }));

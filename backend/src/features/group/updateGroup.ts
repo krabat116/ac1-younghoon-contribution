@@ -1,22 +1,29 @@
 import { z,createRoute,OpenAPIHono } from '@hono/zod-openapi'
 import { getDB } from '../../external/database/db';
-import { type ENVS } from '../../environment';
+import { emojiRegex, type ENVS } from '../../environment';
 
 /**
  * This defines the structure of our routes input or body of the request
  */
-const updateUserSchema = z.object({
-    name: z.string().optional().openapi({example:'Babys first moments!'}),
-    description: z.string().optional().openapi({example:'A collection of beautiful baby Andreas first experiences!'}),
-  }).openapi('AlbumUpdate')
+const updateGroupSchema = z.object({
+  // ownerId: z.string().openapi({example:'user1'}),// Disabled for now, but could be used to transfer ownership
+  emojiThumbnail: z.string().emoji().refine((value) => {
+    const emojiMatches = value.match(emojiRegex);
+    return emojiMatches !== null && emojiMatches.length === 1;
+  }, {
+    message: "String must contain exactly one emoji",
+  }).optional().openapi({example:'🎎'}),
+  name: z.string().optional().openapi({example:'The Doll House'}),
+  description: z.string().optional().openapi({example:'Just the groups of girlies.'}),
+  }).openapi('GroupUpdate')
 
-const updateAlbumParams = z.object({
-  albumId:z.string().min(1).openapi({
+const updateGroupParams = z.object({
+  groupId:z.string().min(1).openapi({
     param:{
         in:'path',
-        name:'albumId'
+        name:'groupId'
     },
-    description:'Id of album you wish to update.'
+    description:'Id of group you wish to update.'
 })
 })
 
@@ -32,22 +39,22 @@ const Response = z.object({
 /**
  * This both defines our routes setup, but also generates the openAPI documentation.
  */
-const updateAlbumRoute = createRoute({
+const updateGroupRoute = createRoute({
     method:'patch',
-    path:'/album/{albumId}',
+    path:'/group/{groupId}',
     request: {
-      params:updateAlbumParams,
+      params:updateGroupParams,
       body: {
         content: {
           'multipart/form-data': {
-            schema: updateUserSchema
+            schema: updateGroupSchema
           }
         }
       }
     },
     responses: {
         201: {
-            description:'update a user object.',
+            description:'update a group.',
             content:{
                 'application/json':{
                     schema: Response
@@ -55,7 +62,7 @@ const updateAlbumRoute = createRoute({
             }
         },
         500: {
-          description:'failed to update user.',
+          description:'failed to update group.',
           content:{
             'application/json':{
               schema: Response
@@ -65,20 +72,20 @@ const updateAlbumRoute = createRoute({
     }
 })
 
-export const updateAlbum = new OpenAPIHono<{ Bindings: ENVS }>();
+export const updateGroup = new OpenAPIHono<{ Bindings: ENVS }>();
 
 /**
  * This is the actual logic part of our route / feature. 
  */
-updateAlbum.openapi(updateAlbumRoute,async (c) => {
+updateGroup.openapi(updateGroupRoute,async (c) => {
     const db = getDB(c.env.DB);
 
-    const albumId = c.req.param('albumId');
+    const groupId = c.req.param('groupId');
     const body = c.req.valid("form");
   
     try{
       // Configure the update query
-      var query = db.updateTable('Albums').where('id','=',albumId)
+      var query = db.updateTable('Groups').where('id','=',groupId)
 
       // We only update the order value if it's provided.
       if(body.name != undefined){
@@ -89,19 +96,23 @@ updateAlbum.openapi(updateAlbumRoute,async (c) => {
         query = query.set({description:body.description})
       }
 
+      if(body.emojiThumbnail != undefined){
+        query = query.set({emojiThumbnail:body.emojiThumbnail})
+      }
+
       // Execute the query
       await query.execute()
 
       return c.json({
         type:"SUCCESS",
-        message:'successfully updated album.',
+        message:'successfully updated group.',
       },201)
 
     } catch (e) {
       console.error(e)
       return c.json({
         type:"ERROR",
-        message:"Failed to update album."
+        message:"Failed to update group."
       },500)
     }
   })
