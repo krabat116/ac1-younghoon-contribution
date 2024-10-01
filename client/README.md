@@ -35,16 +35,17 @@ npm run reset-project
 
 This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Learn more
+# Generating API types
 
-To learn more about developing your project with Expo, look at the following resources:
+This project relies heavily on the generation of an OpenAPI schema which is generated automatically by the backend api. Here in the client we can use this schema, along with two libraries which allow us to generate typesafe fetching endpoints.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+   * openapi-typescript
+   * openapi-fetch
 
-## Join the community
+Whenever this schema changes we will need to regenerate the types used to ensure they are in sync. in the future this will be managed more strictly using CI/CD processes, however at this time we can simply run:
 
-Join our community of developers creating universal apps.
+```bash
+npm run typegen
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+which will regenerate these types from the shared schema.
