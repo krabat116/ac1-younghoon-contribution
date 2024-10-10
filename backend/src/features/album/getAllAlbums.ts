@@ -70,8 +70,6 @@ getAllAlbums.openapi(getAllAlbumsRoute,async (c) => {
                             .where('owner','=',userId)
                             .execute();
 
-        if(!albumIds.length) throw new Error(`Unable to find albums for user:${userId}`)
-
         return c.json({
             type:"SUCCESS",
             message:"Successfully found albums for user.",
