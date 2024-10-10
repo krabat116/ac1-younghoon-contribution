@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "title": "Photo Sharing App"
   },
   "components": {
@@ -2107,6 +2107,75 @@
           },
           "500": {
             "description": "failed to update user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/album/all/{userId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Id of user you wish to fetch albums for."
+            },
+            "required": true,
+            "in": "path",
+            "name": "userId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch all albums for a user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "albumIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "message",
+                    "albumIds"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "albums could not be fetched.",
             "content": {
               "application/json": {
                 "schema": {

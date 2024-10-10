@@ -34,6 +34,7 @@ import { createGroup } from './features/group/createGroup'
 import { getGroup } from './features/group/getGroup'
 import { updateGroup } from './features/group/updateGroup'
 import { deleteGroup } from './features/group/deleteGroup'
+import { getAllAlbums } from './features/album/getAllAlbums'
 
 // Root Application
 const app = new OpenAPIHono<{ Bindings: ENVS }>();
@@ -71,6 +72,7 @@ app.route('/',updateUser);
 
 app.route('/',createAlbum);
 app.route('/',getAlbum);
+app.route('/',getAllAlbums);
 app.route('/',deleteAlbum);
 app.route('/',updateAlbum);
 
@@ -86,7 +88,7 @@ app.get('/ui', swaggerUI({ url: '/doc' }));
 app.doc("/doc", {
   openapi: "3.0.0",
   info: {
-      version: "1.0.1",
+      version: "1.0.2",
       title: "Photo Sharing App",
   },
 });
