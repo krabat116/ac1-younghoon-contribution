@@ -37,60 +37,59 @@ import { deleteGroup } from './features/group/deleteGroup'
 import { getAllAlbums } from './features/album/getAllAlbums'
 
 // Root Application
-const app = new OpenAPIHono<{ Bindings: ENVS }>();
+const app = new OpenAPIHono<{ Bindings: ENVS }>()
 
 // Application Feature Routes
-app.route('/',uploadImage);
-app.route('/',getImage);
-app.route('/',updateImage);
-app.route('/',deleteImage);
-app.route('/',getAllImages);
+app.route('/', uploadImage)
+app.route('/', getImage)
+app.route('/', updateImage)
+app.route('/', deleteImage)
+app.route('/', getAllImages)
 
-app.route('/',createComment);
-app.route('/',getComments);
-app.route('/',deleteComment);
+app.route('/', createComment)
+app.route('/', getComments)
+app.route('/', deleteComment)
 
-app.route('/',createGroupMember);
-app.route('/',getGroupMembers);
-app.route('/',deleteGroupMember);
-app.route('/',updateGroupMember);
+app.route('/', createGroupMember)
+app.route('/', getGroupMembers)
+app.route('/', deleteGroupMember)
+app.route('/', updateGroupMember)
 
-app.route('/',createAlbumMember);
-app.route('/',deleteAlbumMember);
-app.route('/',getAlbumMembers);
-app.route('/',updateAlbumMember);
+app.route('/', createAlbumMember)
+app.route('/', deleteAlbumMember)
+app.route('/', getAlbumMembers)
+app.route('/', updateAlbumMember)
 
-app.route('/',createPublicLink);
-app.route('/',deletePublicLink);
-app.route('/',getPublicLink);
-app.route('/',updatePublicLink);
+app.route('/', createPublicLink)
+app.route('/', deletePublicLink)
+app.route('/', getPublicLink)
+app.route('/', updatePublicLink)
 
-app.route('/',createUser);
-app.route('/',deleteUser);
-app.route('/',getUser);
-app.route('/',updateUser);
+app.route('/', createUser)
+app.route('/', deleteUser)
+app.route('/', getUser)
+app.route('/', updateUser)
 
-app.route('/',createAlbum);
-app.route('/',getAlbum);
-app.route('/',getAllAlbums);
-app.route('/',deleteAlbum);
-app.route('/',updateAlbum);
+app.route('/', createAlbum)
+app.route('/', getAlbum)
+app.route('/', deleteAlbum)
+app.route('/', updateAlbum)
 
-app.route('/',createGroup);
-app.route('/',getGroup);
-app.route('/',updateGroup);
-app.route('/',deleteGroup);
+app.route('/', createGroup)
+app.route('/', getGroup)
+app.route('/', updateGroup)
+app.route('/', deleteGroup)
 
 // SwaggerUI component
-app.get('/ui', swaggerUI({ url: '/doc' }));
+app.get('/ui', swaggerUI({ url: '/doc' }))
 
 // Used to access the OpenAPI JSON Document
-app.doc("/doc", {
-  openapi: "3.0.0",
+app.doc('/doc', {
+  openapi: '3.0.0',
   info: {
-      version: "1.0.2",
-      title: "Photo Sharing App",
+    version: '1.0.1',
+    title: 'Photo Sharing App',
   },
-});
+})
 
-export default app;
+export default app

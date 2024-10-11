@@ -18,3 +18,9 @@ VALUES ('user3','Claire@blackhole.com','0400123456','Claire','Voyante','2000-03-
 
 INSERT INTO Albums (id, owner, name, description, thumbnailUrl)
 VALUES ('album1','user1','test album','a small album purely for testing','');
+
+INSERT INTO Users (id,email, phone, firstName, lastName, dateOfBirth, 
+                    subscription, profileImage, country, state)
+VALUES ('user4','John@blackhole.com','0400123456','John','White','2002-03-01',
+        'FREE','','Australia','VIC');
+

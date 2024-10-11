@@ -4,7 +4,7 @@
     "dev": "wrangler dev src/index.ts",
     "dev:remote": "wrangler dev src/index.ts --remote",
     "deploy": "wrangler deploy --minify src/index.ts",
-    "db:generate": "DATABASE_URL=./.wrangler/state/v3/d1/miniflare-D1DatabaseObject/ba6c6054bf48771b6665939ab9356249a3ff4b27cb511de56f0735faa4d12766.sqlite npx kysely-codegen",
+    "db:generate": "DATABASE_URL=./.wrangler/state/v3/d1/miniflare-D1DatabaseObject/ecd121b9faba1d3340ddcfd7d787dd4160cd4b835a0f8ce613ad22410021f7c6.sqlite npx kysely-codegen",
     "migration:create": "wrangler d1 migrations create photo-app-db",
     "migration:apply": "wrangler d1 migrations apply photo-app-db",
     "migration:deploy": "wrangler d1 migrations apply photo-app-db --remote",
