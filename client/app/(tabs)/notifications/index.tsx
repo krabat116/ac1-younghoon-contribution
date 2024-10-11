@@ -1,48 +1,55 @@
-import React, { useState } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  Image,
-} from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 // Define the type for request items
 interface Request {
-  id: string
-  name: string
-  avatar: string
-  message: string
+  id: string;
+  name: string;
+  avatar: string;
+  message: string;
+  requestType: string; 
+}
+
+// Define the type for notification items
+interface Notification {
+  id: string;
+  message: string;
+  timestamp: string;
 }
 
 // Define the array of requests with typed items
-const requestsData: Request[] = [
+const initialRequestsData: Request[] = [
   {
     id: '1',
     name: 'Ronaldo',
     avatar: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/1.jpg',
     message: 'Ronaldo has requested to add you',
+    requestType: 'add_friend', 
   },
   {
     id: '2',
     name: 'Son',
     avatar: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/2.jpg',
     message: 'Requested a 2023 Summer album',
+    requestType: 'album_request', 
   },
   {
     id: '3',
     name: 'Leisha',
     avatar: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/3.jpg',
-    message: "You requested to share Leisha's content",
+    message: 'You requested to share Leisha\'s content',
+    requestType: 'share_content',
   },
-]
+];
+
+// Define the array of notifications with typed items
+const notificationsData: Notification[] = [];
 
 export default function Notifications() {
-  const [activeTab, setActiveTab] = useState<'requests' | 'notifications'>(
-    'requests'
-  ) // Manage active tab state
+  const [activeTab, setActiveTab] = useState<'requests' | 'notifications'>('requests');  
+  const [requestsData, setRequestsData] = useState<Request[]>(initialRequestsData);
+  const [notifications, setNotifications] = useState<Notification[]>(notificationsData);
 
   // Render each request item in the list
   const renderRequestItem = ({ item }: { item: Request }) => (
@@ -53,53 +60,111 @@ export default function Notifications() {
         <Text>{item.message}</Text>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.acceptButton}>
+        <TouchableOpacity
+          style={styles.acceptButton}
+          onPress={() => handleAcceptRequest(item)}
+        >
           <Ionicons name="checkmark-circle-outline" size={24} color="green" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.declineButton}>
+        <TouchableOpacity
+          style={styles.declineButton}
+          onPress={() => handleRejectRequest(item)}
+        >
           <Ionicons name="close-circle-outline" size={24} color="red" />
         </TouchableOpacity>
       </View>
     </View>
-  )
+  );
+
+  // Handle request acceptance
+  const handleAcceptRequest = (request: Request) => {
+    let newNotification: Notification;
+
+    // Create notification based on the type of request
+    switch (request.requestType) {
+      case 'add_friend':
+        newNotification = {
+          id: `${notifications.length + 1}`,
+          message: `You and ${request.name} are now friends!`,
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        break;
+      case 'album_request':
+        newNotification = {
+          id: `${notifications.length + 1}`,
+          message: `${request.name} has been added to the 2023 Summer album!`,
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        break;
+      case 'share_content':
+        newNotification = {
+          id: `${notifications.length + 1}`,
+          message: `You are now sharing content with ${request.name}.`,
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        break;
+      default:
+        newNotification = {
+          id: `${notifications.length + 1}`,
+          message: 'You have a new notification.',
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        break;
+    }
+
+    // Update notifications state
+    setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
+
+    // Update the requests state
+    setRequestsData((prevRequests) =>
+      prevRequests.filter((req) => req.id !== request.id) 
+    );
+  };
+
+  // Handle request rejection
+  const handleRejectRequest = (request: Request) => {
+    const rejectionNotification: Notification = {
+      id: `${notifications.length + 1}`,
+      message: `You rejected ${request.name}'s request.`,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+
+    // Update notifications state
+    setNotifications((prevNotifications) => [...prevNotifications, rejectionNotification]);
+
+    // Update the requests state
+    setRequestsData((prevRequests) =>
+      prevRequests.filter((req) => req.id !== request.id) 
+    );
+  };
+
+  // Render each notification item in the list
+  const renderNotificationItem = ({ item }: { item: Notification }) => (
+    <View style={styles.notificationItem}>
+      <Text>{item.message}</Text>
+      <Text style={styles.timestamp}>{item.timestamp}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <Text style={styles.header}>ACTIVITY</Text>
-
+      {/* Removed the ACTIVITY header */}
       {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === 'requests' && styles.activeTab,
-          ]}
+          style={[styles.tabButton, activeTab === 'requests' && styles.activeTab]}
           onPress={() => setActiveTab('requests')}
         >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === 'requests' && styles.activeTabText,
-            ]}
-          >
+          <Text style={[styles.tabText, activeTab === 'requests' && styles.activeTabText]}>
             Requests
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === 'notifications' && styles.activeTab,
-          ]}
+          style={[styles.tabButton, activeTab === 'notifications' && styles.activeTab]}
           onPress={() => setActiveTab('notifications')}
         >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === 'notifications' && styles.activeTabText,
-            ]}
-          >
-            Notification
+          <Text style={[styles.tabText, activeTab === 'notifications' && styles.activeTabText]}>
+            Notifications
           </Text>
         </TouchableOpacity>
       </View>
@@ -115,12 +180,15 @@ export default function Notifications() {
       )}
 
       {activeTab === 'notifications' && (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No notifications available.</Text>
-        </View>
+        <FlatList
+          data={notifications}
+          renderItem={renderNotificationItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+        />
       )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -167,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     marginBottom: 10,
-    elevation: 3, // For slight shadow effect
+    elevation: 3,  
   },
   avatar: {
     width: 50,
@@ -190,13 +258,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   declineButton: {},
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  notificationItem: {
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginBottom: 10,
+    elevation: 2,
   },
-  emptyText: {
-    fontSize: 18,
+  timestamp: {
+    fontSize: 12,
     color: '#999',
+    marginTop: 4,
   },
-})
+});

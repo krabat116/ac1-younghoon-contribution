@@ -1,61 +1,65 @@
-import { View, Text, Image } from 'react-native'
-import React from 'react'
-import { Tabs } from 'expo-router'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import Entypo from '@expo/vector-icons/Entypo'
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
-import AntDesign from '@expo/vector-icons/AntDesign'
+import { View } from 'react-native';
+import React from 'react';
+import { Tabs } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabsLayout() {
   return (
     <Tabs screenOptions={{ headerTintColor: 'black', tabBarShowLabel: false }}>
       <Tabs.Screen
-        name="albums/index"
+        name="home/index"
         options={{
-          headerTitle: 'Albums',
+          headerTitle: 'Home', // Updated header title
           tabBarIcon: ({ color }) => (
-            <AntDesign name="appstore-o" size={24} color={color} />
+            <Ionicons name="home-outline" size={24} color={color} />
           ),
         }}
       />
-
       <Tabs.Screen
-        name="group/index"
+        name="albums/index"
         options={{
-          headerTitle: 'Group',
+          headerTitle: 'Albums', // Updated header title
           tabBarIcon: ({ color }) => (
-            <AntDesign name="team" size={24} color={color} />
+            <Ionicons name="images-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="group/index" // New Group section
+        options={{
+          headerTitle: 'Groups', // Header title for Group
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="people-outline" size={24} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="add/index"
         options={{
-          headerTitle: 'add',
+          headerTitle: 'Add', // Updated header title
           tabBarIcon: ({ color }) => (
-            <AntDesign name="plus" size={24} color={color} />
+            <Ionicons name="add-circle-outline" size={24} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="notifications/index"
         options={{
-          headerTitle: 'Notifications',
+          headerTitle: 'Notifications', // Updated header title
           tabBarIcon: ({ color }) => (
-            <Entypo name="notification" size={24} color={color} />
+            <Ionicons name="notifications-outline" size={24} color={color} />
           ),
         }}
       />
-
       <Tabs.Screen
         name="profile/index"
         options={{
-          headerTitle: 'Profile',
+          headerTitle: 'Profile', // Updated header title
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="user-circle" size={24} color={color} />
+            <Ionicons name="person-circle-outline" size={24} color={color} />
           ),
         }}
       />
     </Tabs>
-  )
+  );
 }
