@@ -62,7 +62,7 @@ const AddImage = () => {
 
       console.log('server response status:', response.status)
       const result = await response.json()
-      console.log('서버 응답:', result)
+      console.log('server response:', result)
 
       if (response.status === 201) {
         Alert.alert('Success', 'Image uploaded successfully')
@@ -70,7 +70,7 @@ const AddImage = () => {
         Alert.alert('Error', result.message || 'Failed to upload image')
       }
     } catch (error) {
-      console.error('업로드 중 오류 발생:', error)
+      console.error('Error while uploading:', error)
       Alert.alert('Error', 'Failed to upload image. Please try again.')
     }
   }
