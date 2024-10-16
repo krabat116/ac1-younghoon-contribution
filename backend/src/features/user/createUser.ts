@@ -1,13 +1,12 @@
 import { z,createRoute,OpenAPIHono } from '@hono/zod-openapi'
-import { getObjectStorage } from '../../external/objectstorage/types';
 import { getDB } from '../../external/database/db';
 import { SUBSCRIPTIONS, type ENVS } from '../../environment';
-import { getNewId } from '../../external/ids/getId';
 
 /**
  * This defines the structure of our routes input or body of the request
  */
 const createUserSchema = z.object({
+  id: z.string().openapi({example:'user1'}),
   firstName: z.string().openapi({example:'John'}),
   lastName: z.string().openapi({example:'Doe'}),
   dateOfBirth: z.string().date().openapi({example:"2000-01-07"}),
@@ -41,13 +40,13 @@ const createUserRoute = createRoute({
     method:'post',
     path:'/user',
     request: {
-        body: {
-          content: {
-            'multipart/form-data': {
-              schema: createUserSchema
-            }
+      body: {
+        content:{
+          'application/json':{
+            schema:createUserSchema
           }
         }
+      }
     },
     responses: {
         201: {
@@ -77,14 +76,12 @@ export const createUser = new OpenAPIHono<{ Bindings: ENVS }>();
 createUser.openapi(createUserRoute,async (c) => {
     const db = getDB(c.env.DB);
 
-    const body = c.req.valid("form");
+    const body = c.req.valid('json');
   
-    const newUserId = getNewId();
-
     try{
       
       await db.insertInto('Users').values({
-        id:newUserId,
+        id:body.id,
         firstName:body.firstName,
         lastName:body.lastName,
         email:body.email,
@@ -107,7 +104,7 @@ createUser.openapi(createUserRoute,async (c) => {
   
     return c.json({
       type:"SUCCESS",
-      message:`successfully created new user with id:${newUserId}`,
-      userId: newUserId
+      message:`successfully created new user with id:${body.id}`,
+      userId: body.id
     },201)
   })

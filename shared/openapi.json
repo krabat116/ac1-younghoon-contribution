@@ -136,6 +136,10 @@
       "UserCreate": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "example": "user1"
+          },
           "firstName": {
             "type": "string",
             "example": "John"
@@ -172,6 +176,7 @@
           }
         },
         "required": [
+          "id",
           "firstName",
           "lastName",
           "dateOfBirth",
@@ -1406,7 +1411,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UserCreate"
               }

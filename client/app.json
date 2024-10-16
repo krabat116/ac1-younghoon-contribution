@@ -35,8 +35,17 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./node_modules/@expo-google-fonts/nunito/Nunito_700Bold.ttf",
+            "./node_modules/@expo-google-fonts/raleway/Raleway_700Bold.ttf",
+            "./node_modules/@expo-google-fonts/nunito/Nunito_400Regular.ttf"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
