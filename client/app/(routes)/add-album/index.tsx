@@ -8,9 +8,11 @@ import {
 } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { api } from '@/external/fetch' // api 모듈 경로에 맞게 수정 필요
 
 const AddAlbum = () => {
+  const router = useRouter()
   const navigation = useNavigation()
   const [albumName, setAlbumName] = useState('')
   const [description, setDescription] = useState('')
@@ -45,7 +47,10 @@ const AddAlbum = () => {
       console.log('Response Data:', result)
       if (response.status === 201 && result.type === 'SUCCESS') {
         Alert.alert('Success', result.message)
-        navigation.goBack() // 앨범 생성 후 이전 페이지로 이동
+        // navigation.goBack() // 앨범 생성 후 이전 페이지로 이동
+        const albumId = result.albumId // 생성된 앨범 ID 받아오기
+        console.log('Album ID:', albumId)
+        router.push(`/add-image/albumId=${albumId}` as any)
       } else {
         Alert.alert('Failed to add album', result.message)
       }

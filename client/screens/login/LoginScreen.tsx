@@ -7,101 +7,71 @@ import {
   Text,
   TextInput,
   ScrollView,
+  Button,
 } from 'react-native'
 import { useEffect, useState } from 'react'
-import { useFonts, Raleway_700Bold } from '@expo-google-fonts/raleway'
-import { Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito'
 import { router } from 'expo-router'
-import Constants from 'expo-constants';
-import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x';
-import * as SecureStore from 'expo-secure-store';
-import { api } from '@/external/fetch';
-import { Alert } from 'react-native';
-import { LogBox } from 'react-native';
-
-
-
-// Access environment variables with optional chaining and default values
-const KINDE_ISSUER_URL = Constants.expoConfig?.extra?.KINDE_ISSUER_URL ?? '';
-const KINDE_POST_CALLBACK_URL = Constants.expoConfig?.extra?.KINDE_POST_CALLBACK_URL ?? '';
-const KINDE_CLIENT_ID = Constants.expoConfig?.extra?.KINDE_CLIENT_ID ?? '';
-const KINDE_POST_LOGOUT_REDIRECT_URL = Constants.expoConfig?.extra?.KINDE_POST_LOGOUT_REDIRECT_URL ?? '';
-
-// Initialize KindeSDK
-const client = new KindeSDK(
-  KINDE_ISSUER_URL,
-  KINDE_POST_CALLBACK_URL,
-  KINDE_CLIENT_ID,
-  KINDE_POST_LOGOUT_REDIRECT_URL
-);
-
+import Entypo from 'react-native-vector-icons/Entypo'
+import { api } from '../../external/fetch'
 
 export default function LogIn() {
-  if (__DEV__) {
-    const originalWarn = console.warn;
-    console.warn = (message, ...args) => {
-      if (message && message.includes('fontFamily') && message.includes('has not been loaded')) {
-        return; // Don't show font warnings
-      }
-      originalWarn(message, ...args); // Otherwise, show the warning
-    };
-  LogBox.ignoreLogs([
-    'fontFamily'  // This will ignore all warnings related to missing fonts
-  ]);
-}
-  const[test, setTest] = useState('')
-  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [testdata, setTestdata] = useState('')
+  const [error, setError] = useState('')
   const [userInfo, setUserInfo] = useState({
-    id: '',
+    email: '',
     password: '',
   })
+  const [isLoginEnabled, setIsLoginEnabled] = useState(false)
 
-  const validateEmail = (value: string) => {
-    // Regex for validating email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(value);
-  };
+  useEffect(() => {
+    setIsLoginEnabled(
+      userInfo.email.trim() !== '' && userInfo.password.trim() !== ''
+    )
+  }, [userInfo])
 
-  const handleEmailChange = (value: string) => {
-    setUserInfo({ ...userInfo, id: value });
-
-    // Check if the email is valid
-    if (validateEmail(value)) {
-      setIsValidEmail(true);
-    } else {
-      setIsValidEmail(false);
-    }
-  };
-
-  async function saveToken(token: string) {
-    await SecureStore.setItemAsync('accessToken', token);
-  }  
-  
-  async function getToken() {
-    return await SecureStore.getItemAsync('accessToken');
-  }
-  
-  async function displayToken() {
-    const token = await getToken(); // Wait for the promise to resolve
-    console.log("Token After saving: ", token);
-  }
-  
+  const [required, setRequired] = useState('')
   const handleLogin = async () => {
-    console.log("You've tried to log in", userInfo.id, userInfo.password)
-   const token = await client.login();
-    if (token) {
-      // User was authenticated
-      console.log("Authentication Successful")
-      console.log("Token Before saving: ", token.access_token)
-      saveToken(token.access_token)
-      displayToken()
-      router.push('/(tabs)/home')
+    // Perform Kinde Login here -
+    //TODO:
+
+    // Retrieve unique user id from kinde.
+    //TODO:
+
+    // use user id to lookup user details in database
+    const sampleUserId = 'user1'
+    const { data, error } = await api.GET('/user/{userId}', {
+      params: {
+        path: {
+          userId: sampleUserId, //TODO: Change.
+        },
+      },
+    })
+
+    if (error) {
+      console.log(error)
     }
-    else{
-      router.push('/(routes)/login')
-    } 
-  };
-  
+    setTestdata(data?.message.toString() || '')
+
+    router.push('/(tabs)/albums')
+  }
+
+  async function testFunc() {
+    console.log('TESTING ----')
+    const result = await api.POST('/user', {
+      body: {
+        id: 'user100',
+        country: 'australia',
+        state: 'vic',
+        dateOfBirth: '2000-01-07',
+        email: 'some@email.com',
+        firstName: 'tyler',
+        lastName: 'beaumont',
+        phone: '0400593366',
+      },
+    })
+
+    console.log('RESULT', result)
+  }
 
   return (
     <ScrollView>
@@ -112,8 +82,44 @@ export default function LogIn() {
         >
           Memory Sharing
         </Text>
+
+        {/* <Button title='TEST' onPress={testFunc}></Button> */}
+
+        <Text>{testdata}</Text>
+        <TextInput
+          style={{ fontFamily: 'Nunito_400Regular' }}
+          className="bg-gray-200 p-4 mb-4 rounded-lg w-60"
+          placeholder="Email"
+          placeholderTextColor="#6b7280"
+          autoCapitalize="none"
+          value={userInfo.email}
+          onChangeText={(value) => setUserInfo({ ...userInfo, email: value })}
+        >
+          {required && (
+            <View className="flex-row items-center mx-4 top-11 absolute">
+              <Entypo name="cross" size={18} color={'red'} />
+            </View>
+          )}
+        </TextInput>
+        <TextInput
+          style={{ fontFamily: 'Nunito_400Regular' }}
+          className=" bg-gray-200 p-4 mb-4 rounded-lg w-60"
+          placeholder="Password"
+          placeholderTextColor="#6b7280"
+          autoCapitalize="none"
+          value={userInfo.password}
+          secureTextEntry={true}
+          onChangeText={(value) =>
+            setUserInfo({ ...userInfo, password: value })
+          }
+        ></TextInput>
         <TouchableOpacity>
-       
+          <Text
+            style={{ fontFamily: 'Nunito_400Regular' }}
+            className="ml-24 text-blue-500 mb-4"
+          >
+            Forgot password
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           className="bg-blue-600 p-3 w-60 mb-3 rounded-lg justify-center"
