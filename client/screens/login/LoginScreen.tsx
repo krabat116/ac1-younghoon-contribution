@@ -38,19 +38,19 @@ export default function LogIn() {
     //TODO:
 
     // use user id to lookup user details in database
-    const sampleUserId = 'user1'
-    const { data, error } = await api.GET('/user/{userId}', {
-      params: {
-        path: {
-          userId: sampleUserId, //TODO: Change.
-        },
-      },
-    })
+    // const sampleUserId = 'user1'
+    // const { data, error } = await api.GET('/user/{userId}', {
+    //   params: {
+    //     path: {
+    //       userId: sampleUserId, //TODO: Change.
+    //     },
+    //   },
+    // })
 
-    if (error) {
-      console.log(error)
-    }
-    setTestdata(data?.message.toString() || '')
+    // if (error) {
+    //   console.log(error)
+    // }
+    // setTestdata(data?.message.toString() || '')
 
     router.push('/(tabs)/albums')
   }

@@ -15,6 +15,28 @@ import Card from '../../../components/Card'
 import { useFonts, Italiana_400Regular } from '@expo-google-fonts/italiana'
 import { api } from '@/external/fetch'
 
+// type ImageData = {
+//   source: string;
+//   id: string;
+//   caption: string;
+//   aspectratio: number;
+// }
+
+type ImageData = {
+  description: string | null;
+  id: string;
+  albumid: string;
+  createdAt: string | null;
+  heightpx: number;
+  imageUrl: string;
+  order: number;
+  owner: string;
+  thumbnailUrl: string;
+  widthpx: number;
+}
+
+
+
 const AlbumDetail = () => {
   const [fontsLoaded] = useFonts({
     Italiana_400Regular,
@@ -36,7 +58,7 @@ const AlbumDetail = () => {
   const { albumId } = useLocalSearchParams()
   // const [albums, setAlbums] = useState(albumData)
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null)
-  const [photos, setPhotos] = useState<any[]>([])
+  const [photos, setPhotos] = useState<ImageData[]>([])
 
   const fetchAlbumDetails = async () => {
     try {
@@ -70,26 +92,31 @@ const AlbumDetail = () => {
         return
       }
 
-      const formattedPhotos = data.map(async (photo) => {
-        const imageUrl = await api.GET('/image/{id}', {
-          params: {
-            path: {
-              id: photo.id,
-            },
-          },
-        })
+      // const formattedPhotos = data.map(async (photo) => {
+      //   const imageUrl = await api.GET('/image/{id}', {
+      //     params: {
+      //       path: {
+      //         id: photo.id,
+      //       },
+      //     },
+      //   })
 
-        return {
-          source: imageUrl,
-          id: photo.id,
-          caption: photo.description || 'No Caption',
-          aspectratio: 1,
-        }
-      })
+      //   return {
+      //     source: imageUrl.data?.presignedUrl || '',
+      //     id: photo.id,
+      //     caption: photo.description || 'No Caption',
+      //     aspectratio: 1,
+      //   }
+      // })
 
-      const imageData = await Promise.all(formattedPhotos)
+      // const imageData = await Promise.all(formattedPhotos)
 
-      setPhotos(imageData) // 가져온 사진 데이터 설정
+      // setPhotos(imageData) // 가져온 사진 데이터 설정
+      console.log("urls",
+        photos.map(p => p.imageUrl)
+      )
+
+      setPhotos(data)
     } catch (err) {
       console.error('Failed to fetch album photos:', err)
     }
@@ -118,56 +145,86 @@ const AlbumDetail = () => {
     )
   }
 
-  // const takePhoto = async () => {
-  //   const permissionResult = await ImagePicker.requestCameraPermissionsAsync()
-  //   if (!permissionResult.granted) {
-  //     alert('Permission to access camera is required!')
-  //     return
-  //   }
+  const takePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync()
+    if (!permissionResult.granted) {
+      alert('Permission to access camera is required!')
+      return
+    }
 
-  //   const result = await ImagePicker.launchImageLibraryAsync({
-  //     allowsEditing: true,
-  //     quality: 1,
-  //   })
+    const result = await ImagePicker.launchImageLibraryAsync({
+      quality: 0,
+      base64:true
+    })
 
-  //   if (!result.canceled && result.assets && result.assets[0]) {
-  //     const newPhotoUri = result.assets[0].uri
-  //     handleAddPhoto(newPhotoUri)
-  //   }
-  // }
+    if (!result.canceled && result.assets && result.assets[0]) {
+      const selectedPhoto = result.assets[0]
+      const newPhotoData = selectedPhoto.base64 as string
+      const mimeType = selectedPhoto.mimeType || 'image/jpeg'
+      const width = selectedPhoto.width
+      const height = selectedPhoto.height 
+      
+
+      const {data,error} = await api.POST('/image',{
+        body:{
+          albumId:'album1',//todo: use context
+          image: newPhotoData,
+          mimeType: mimeType,
+          widthPx:width,
+          heightPx: height,
+          ownerId: 'user1', //TODO: use context        ,
+          order: photos.length + 1
+          }
+      })
+
+      if(error) return//TODO: handle
+
+      // handleAddPhoto(newPhotoUri)
+    }
+  }
 
   // const handleAddPhoto = (uri: string) => {
-  //   const updatedAlbums = albums.map((album) => {
-  //     if (album.id === albumId) {
-  //       const updatedAlbum = {
-  //         ...album,
-  //         photos: [
-  //           ...album.photos,
-  //           {
-  //             id: (album.photos.length + 1).toString(),
-  //             photoName: `New Photo ${album.photos.length + 1}`,
-  //             images: { uri },
-  //           },
-  //         ],
-  //       }
+    // const updatedAlbums = albums.map((album) => {
+    //   if (album.id === albumId) {
+    //     const updatedAlbum = {
+    //       ...album,
+    //       photos: [
+    //         ...album.photos,
+    //         {
+    //           id: (album.photos.length + 1).toString(),
+    //           photoName: `New Photo ${album.photos.length + 1}`,
+    //           images: { uri },
+    //         },
+    //       ],
+    //     }
 
-  //       setSelectedAlbum(updatedAlbum)
-  //       return updatedAlbum
-  //     }
-  //     return album
-  //   })
+    //     setSelectedAlbum(updatedAlbum)
+    //     return updatedAlbum
+    //   }
+    //   return album
+    // })
 
-  //   setAlbums(updatedAlbums)
+
+
+    // setAlbums(updatedAlbums)
+  //   const newPhoto : ImageData = {
+  //               id: '',
+  //               caption:'',
+  //               source: uri ,
+  //               aspectratio:5
+  //             }
+
+  //   setPhotos([...photos,newPhoto])
   // }
 
-  const photoData = photos.map((photo, index) => ({
-    source: photo.source,
-    id: photo.id,
-    caption: photo.caption,
-    aspectratio: items[index % items.length].aspectratio,
-  }))
+  // const photoData = photos.map((photo, index) => ({
+  //   source: photo.imageUrl,
+  //   id: photo.id,
+  //   caption: photo.description,
+  //   aspectratio: items[index % items.length].aspectratio,
+  // }))
 
-  console.log('Photo Data:', photoData)
+  // console.log('Photo Data:', photoData)
   const width = Dimensions.get('window').width / 2
 
   return (
@@ -184,41 +241,45 @@ const AlbumDetail = () => {
         </Text>
       </View>
 
-      <TouchableOpacity className="w-full items-end">
+      <TouchableOpacity className="w-full items-end" onPress={takePhoto}>
         <Text className="text-md text-gray-400 m-3 flex items-end">
           +Add Photo
         </Text>
       </TouchableOpacity>
 
       <ScrollView className="flex-1">
-        <View className="flex-row">
-          <View className="mr-2 ">
-            {photoData
-              .filter((_, i) => i % 2 === 0)
+        {photos.map(photo => {
+          return <Image source={{ uri: photo.imageUrl }} style={{ width: photo.widthpx, height: photo.heightpx }} />
+        })}
+
+        {/* <View className="flex-row"> */}
+          {/* <View className="mr-2 ">
+            {photos
+              // .filter((_, i) => i % 2 === 0)
               .map((item) => (
                 <Card
-                  source={item.source}
-                  aspectratio={item.aspectratio}
+                  source={item.imageUrl}
+                  aspectratio={item.widthpx / item.heightpx}
                   width={width}
                   key={item.id}
-                  caption={item.caption}
+                  caption={item.description || ""}
                 />
               ))}
           </View>
           <View>
-            {photoData
+            {photos
               .filter((_, i) => i % 2 !== 0)
               .map((item) => (
                 <Card
-                  source={item.source}
-                  aspectratio={item.aspectratio}
+                  source={item.imageUrl}
+                  aspectratio={item.widthpx / item.heightpx}
                   width={width}
                   key={item.id}
-                  caption={item.caption}
+                  caption={item.description || ""}
                 />
               ))}
-          </View>
-        </View>
+          </View> */}
+        {/* </View> */}
       </ScrollView>
     </View>
   )

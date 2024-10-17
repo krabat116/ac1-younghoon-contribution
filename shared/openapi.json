@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.0.2",
+    "version": "1.0.1",
     "title": "Photo Sharing App"
   },
   "components": {
@@ -40,11 +40,21 @@
             "example": 1920
           },
           "image": {
-            "type": "string",
-            "format": "binary"
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
           }
         },
-        "required": ["ownerId", "albumId", "order", "widthPx", "heightPx"]
+        "required": [
+          "ownerId",
+          "albumId",
+          "order",
+          "widthPx",
+          "heightPx",
+          "image",
+          "mimeType"
+        ]
       },
       "ImageUpdate": {
         "type": "object",
@@ -81,7 +91,11 @@
             "example": "Wow! such a beautiful pic!"
           }
         },
-        "required": ["ownerId", "albumId", "content"]
+        "required": [
+          "ownerId",
+          "albumId",
+          "content"
+        ]
       },
       "CommentDelete": {
         "type": "object",
@@ -92,14 +106,20 @@
             "example": "user1"
           }
         },
-        "required": ["ownerId"]
+        "required": [
+          "ownerId"
+        ]
       },
       "GroupMemberCreate": {
         "type": "object",
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["OWNER", "CONTRIBUTOR", "VIEWER"],
+            "enum": [
+              "OWNER",
+              "CONTRIBUTOR",
+              "VIEWER"
+            ],
             "example": "CONTRIBUTOR"
           }
         }
@@ -109,7 +129,11 @@
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["OWNER", "CONTRIBUTOR", "VIEWER"],
+            "enum": [
+              "OWNER",
+              "CONTRIBUTOR",
+              "VIEWER"
+            ],
             "example": "CONTRIBUTOR"
           }
         }
@@ -119,7 +143,11 @@
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["OWNER", "CONTRIBUTOR", "VIEWER"],
+            "enum": [
+              "OWNER",
+              "CONTRIBUTOR",
+              "VIEWER"
+            ],
             "example": "CONTRIBUTOR"
           }
         }
@@ -131,7 +159,9 @@
             "type": "boolean"
           }
         },
-        "required": ["enabled"]
+        "required": [
+          "enabled"
+        ]
       },
       "UserCreate": {
         "type": "object",
@@ -211,7 +241,11 @@
             "example": "a collection of the most beautiful examples of historic french architecture taken from our trip around all of france."
           }
         },
-        "required": ["ownerId", "name", "description"]
+        "required": [
+          "ownerId",
+          "name",
+          "description"
+        ]
       },
       "AlbumUpdate": {
         "type": "object",
@@ -246,7 +280,12 @@
             "example": "The spoopiest group who ever did live."
           }
         },
-        "required": ["ownerId", "emojiThumbnail", "name", "description"]
+        "required": [
+          "ownerId",
+          "emojiThumbnail",
+          "name",
+          "description"
+        ]
       },
       "GroupUpdate": {
         "type": "object",
@@ -273,7 +312,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ImageCreate"
               }
@@ -295,7 +334,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -314,7 +356,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -348,7 +393,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["presignedUrl"]
+                  "required": [
+                    "presignedUrl"
+                  ]
                 }
               }
             }
@@ -367,7 +414,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -411,7 +461,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -430,7 +483,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -465,7 +521,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -484,7 +543,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -584,7 +646,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -618,7 +683,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -637,7 +705,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -705,7 +776,10 @@
                       }
                     }
                   },
-                  "required": ["type", "comments"]
+                  "required": [
+                    "type",
+                    "comments"
+                  ]
                 }
               }
             }
@@ -751,7 +825,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -770,7 +847,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -826,7 +906,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -845,7 +928,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -890,7 +976,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -944,7 +1033,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -989,7 +1081,12 @@
                         "type": "string"
                       }
                     },
-                    "required": ["dateAdded", "GroupId", "Role", "userId"]
+                    "required": [
+                      "dateAdded",
+                      "GroupId",
+                      "Role",
+                      "userId"
+                    ]
                   }
                 }
               }
@@ -1046,7 +1143,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1065,7 +1165,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1110,7 +1213,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1164,7 +1270,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1209,7 +1318,12 @@
                         "type": "string"
                       }
                     },
-                    "required": ["dateAdded", "AlbumId", "Role", "userId"]
+                    "required": [
+                      "dateAdded",
+                      "AlbumId",
+                      "Role",
+                      "userId"
+                    ]
                   }
                 }
               }
@@ -1250,7 +1364,11 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message", "publicLink"]
+                  "required": [
+                    "type",
+                    "message",
+                    "publicLink"
+                  ]
                 }
               }
             }
@@ -1269,7 +1387,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1304,7 +1425,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1336,7 +1460,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["publicLink"]
+                  "required": [
+                    "publicLink"
+                  ]
                 }
               }
             }
@@ -1355,7 +1481,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1399,7 +1528,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1436,7 +1568,11 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message", "userId"]
+                  "required": [
+                    "type",
+                    "message",
+                    "userId"
+                  ]
                 }
               }
             }
@@ -1455,7 +1591,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1492,7 +1631,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1511,7 +1653,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1597,7 +1742,11 @@
                       ]
                     }
                   },
-                  "required": ["type", "message", "user"]
+                  "required": [
+                    "type",
+                    "message",
+                    "user"
+                  ]
                 }
               }
             }
@@ -1616,7 +1765,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1660,7 +1812,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1679,7 +1834,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1716,7 +1874,11 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message", "albumId"]
+                  "required": [
+                    "type",
+                    "message",
+                    "albumId"
+                  ]
                 }
               }
             }
@@ -1735,7 +1897,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1811,7 +1976,11 @@
                       ]
                     }
                   },
-                  "required": ["type", "message", "album"]
+                  "required": [
+                    "type",
+                    "message",
+                    "album"
+                  ]
                 }
               }
             }
@@ -1830,7 +1999,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1865,7 +2037,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1884,7 +2059,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1928,7 +2106,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -1947,69 +2128,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/album/all/{userId}": {
-      "get": {
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Id of user you wish to fetch albums for."
-            },
-            "required": true,
-            "in": "path",
-            "name": "userId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Fetch all albums for a user.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "albumIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": ["type", "message", "albumIds"]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "albums could not be fetched.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -2115,7 +2237,11 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message", "groupId"]
+                  "required": [
+                    "type",
+                    "message",
+                    "groupId"
+                  ]
                 }
               }
             }
@@ -2134,7 +2260,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -2206,7 +2335,11 @@
                       ]
                     }
                   },
-                  "required": ["type", "message", "group"]
+                  "required": [
+                    "type",
+                    "message",
+                    "group"
+                  ]
                 }
               }
             }
@@ -2225,7 +2358,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -2269,7 +2405,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -2288,7 +2427,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -2323,7 +2465,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }
@@ -2342,7 +2487,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["type", "message"]
+                  "required": [
+                    "type",
+                    "message"
+                  ]
                 }
               }
             }

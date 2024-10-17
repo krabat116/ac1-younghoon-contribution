@@ -14,10 +14,12 @@ const uploadImageSchema = z.object({
     order: z.coerce.number().int().positive().openapi({example:1}),
     widthPx: z.coerce.number().int().positive().openapi({example:1080}),
     heightPx: z.coerce.number().int().positive().openapi({example:1920}),
-    image: z.instanceof(File)
-            .refine((file) => file.type.startsWith('image/'), {
-                message: 'Only image files are allowed.',
-            }).openapi({type:'string',format:'binary'})
+    image: z.string(),
+    mimeType:z.string(),
+    // z.instanceof(File)
+    //         .refine((file) => file.type.startsWith('image/'), {
+    //             message: 'Only image files are allowed.',
+    //         }).openapi({type:'string',format:'binary'})
   }).openapi('ImageCreate')
 
 
@@ -39,7 +41,7 @@ const createImageRoute = createRoute({
     request: {
         body: {
           content: {
-            'multipart/form-data': {
+            'application/json': {
               schema: uploadImageSchema
             }
           }
@@ -65,6 +67,42 @@ const createImageRoute = createRoute({
     }
 })
 
+// function base64ToFile(base64String: string, fileName: string, mimeType: string): File {
+//   // Split the base64 string to remove the data URL prefix if it exists
+//   const byteString = atob(base64String.split(',')[1]); // Decodes base64 to binary string
+
+//   // Create an array buffer to store binary data
+//   const arrayBuffer = new ArrayBuffer(byteString.length);
+//   const uintArray = new Uint8Array(arrayBuffer);
+
+//   // Store each character's binary data as an unsigned byte
+//   for (let i = 0; i < byteString.length; i++) {
+//     uintArray[i] = byteString.charCodeAt(i);
+//   }
+
+//   // Create a Blob from the Uint8Array and define its MIME type
+//   const blob = new Blob([uintArray], { type: mimeType });
+
+//   // Convert the Blob into a File object
+//   return new File([blob], fileName, { type: mimeType });
+// }
+
+
+function base64ToFile(base64String: string, fileName: string, mimeType: string) {
+  // Remove data URL scheme if present
+  const base64Data = base64String.replace(/^data:.+;base64,/, '');
+  const byteCharacters = atob(base64Data); // Decode Base64 string
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: mimeType });
+  return new File([blob], fileName, { type: mimeType });
+}
+
 export const uploadImage = new OpenAPIHono<{ Bindings: ENVS }>();
 
 /**
@@ -74,11 +112,25 @@ uploadImage.openapi(createImageRoute,async (c) => {
     const objectStorage = getObjectStorage(c.env);
     const db = getDB(c.env.DB);
 
-    const body = c.req.valid("form");
+    try{
+    const body = c.req.valid("json");
+    // console.log(body)
+
+    // console.log('IMAGE DATA')
+    // console.log(body.image.type)
+    // console.log(body.image)
   
     const newImageId = getNewId();
-    if (body.image instanceof File) {
-      try{
+
+
+    const fileName = newImageId.toString() + ".jpeg"// + body.mimeType.split('/')[-1];
+    // const mimeType = "image/png";
+    
+    // const imageFile = base64ToFile(body.image, fileName, body.mimeType);
+    const imageFile = base64ToFile(body.image,fileName,'image/jpeg')
+
+    if (imageFile instanceof File) {
+      // try{
         //TODO: check if this image or orderid is taken?
         const albumImages = await db.selectFrom('Images')
                           .select(['id','order'])
@@ -105,7 +157,7 @@ uploadImage.openapi(createImageRoute,async (c) => {
           order:body.order
         }).execute();
 
-        await objectStorage.put(newImageId,body.image);
+        await objectStorage.put(newImageId,imageFile);
 
         // Update album image count.
         const albumImageCount = await db.selectFrom('Images')
@@ -116,19 +168,27 @@ uploadImage.openapi(createImageRoute,async (c) => {
         await db.updateTable('Albums').where('id','=',body.albumId).set({
           numImages : albumImageCount?.imageCount ?? 0
         }).execute();
-                                      
-
-      } catch (e) {
-        console.error(e)
+                      
+        
         return c.json({
-          type:"ERROR",
-          message:"Failed to upload new image."
-        },500)
-      }
+          type:"SUCCESS",
+          message:`successfully saved image with id:${newImageId}`,
+        },201)
+
+      // } catch (e) {
+      //   console.error(e)
+      //   return c.json({
+      //     type:"ERROR",
+      //     message:"Failed to upload new image."
+      //   },500)
+      // }
     }
   
+  } catch (e) {
+    console.error(e)
     return c.json({
-      type:"SUCCESS",
-      message:`successfully saved image with id:${newImageId}`,
-    },201)
+      type:"ERROR",
+      message:"Failed to upload new image."
+    },500)
+  }
   })

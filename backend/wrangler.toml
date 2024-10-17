@@ -4,7 +4,7 @@ compatibility_date = "2024-08-06"
 [vars]
 R2_ACCESS_KEY_ID = "a8f19d3618afac3f3fba9026414b0101"
 R2_SECRET_ACCESS_KEY = "a52276eae0195e72da134d5836c11115d186b12927c5912228889e37d93c6e5b"
-BUCKET_NAME = "photo-app-bucket"
+BUCKET_NAME = "dev-photo-sharing"
 ACCOUNT_ID = "ac194df9613976b4e3cfb4ca4b9fd173"
 
 
@@ -14,13 +14,13 @@ ACCOUNT_ID = "ac194df9613976b4e3cfb4ca4b9fd173"
 
 [[r2_buckets]]
 binding = "OBJECT_STORAGE"
-bucket_name = "photo-app-bucket"
-preview_bucket_name = "photo-app-bucket"
+bucket_name = "dev-photo-sharing"
+preview_bucket_name = "dev-photo-sharing"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "photo-app-db"
-database_id = "2f452882-7dc7-4505-8099-87346ddc0182"
+database_name = "dev-photo-sharing"
+database_id = "278c6490-5e7b-41bd-9b70-3a2ba2b51d4c"
 
 # [ai]
 # binding = "AI"
