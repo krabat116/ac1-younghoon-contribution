@@ -29,13 +29,14 @@ export default function Albums() {
   const [fetchedUrl, setFetchedUrl] = useState('')
   const [albums, setAlbums] = useState<Album[]>([])
   const { userId } = useLocalSearchParams()
-  const userIdString = 'user1'//Array.isArray(userId) ? userId[0] : userId
+  const userIdString = 'user1' //Array.isArray(userId) ? userId[0] : userId
 
   const fetchImages = async (albumId: string) => {
     try {
       const { data, error } = await api.GET('/image/all/{albumId}', {
         params: { path: { albumId } },
       })
+      console.log(`Fetched images for album ${albumId}:`, data)
       if (error) {
         console.error(`Failed to fetch images for album ${albumId}:`, error)
         return []

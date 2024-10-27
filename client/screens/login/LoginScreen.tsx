@@ -32,46 +32,46 @@ export default function LogIn() {
   const [required, setRequired] = useState('')
   const handleLogin = async () => {
     // Perform Kinde Login here -
-    //TODO:
+    // TODO:
 
     // Retrieve unique user id from kinde.
-    //TODO:
+    // TODO:
 
     // use user id to lookup user details in database
-    // const sampleUserId = 'user1'
-    // const { data, error } = await api.GET('/user/{userId}', {
-    //   params: {
-    //     path: {
-    //       userId: sampleUserId, //TODO: Change.
-    //     },
-    //   },
-    // })
+    const sampleUserId = 'user1'
+    const { data, error } = await api.GET('/user/{userId}', {
+      params: {
+        path: {
+          userId: userInfo.email, //TODO: Change.
+        },
+      },
+    })
 
-    // if (error) {
-    //   console.log(error)
-    // }
-    // setTestdata(data?.message.toString() || '')
+    if (error) {
+      console.log(error)
+    }
+    setTestdata(data?.message.toString() || '')
 
     router.push('/(tabs)/albums')
   }
 
-  async function testFunc() {
-    console.log('TESTING ----')
-    const result = await api.POST('/user', {
-      body: {
-        id: 'user100',
-        country: 'australia',
-        state: 'vic',
-        dateOfBirth: '2000-01-07',
-        email: 'some@email.com',
-        firstName: 'tyler',
-        lastName: 'beaumont',
-        phone: '0400593366',
-      },
-    })
+  // async function testFunc() {
+  //   console.log('TESTING ----')
+  //   const result = await api.POST('/user', {
+  //     body: {
+  //       id: 'user100',
+  //       country: 'australia',
+  //       state: 'vic',
+  //       dateOfBirth: '2000-01-07',
+  //       email: 'some@email.com',
+  //       firstName: 'tyler',
+  //       lastName: 'beaumont',
+  //       phone: '0400593366',
+  //     },
+  //   })
 
-    console.log('RESULT', result)
-  }
+  //   console.log('RESULT', result)
+  // }
 
   return (
     <ScrollView>
